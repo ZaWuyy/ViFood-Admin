@@ -115,6 +115,19 @@ const List = ({ url }) => {
         fetchList();
     }, [searchTerm, sortType]); // Gọi lại khi searchTerm hoặc sortType thay đổi
 
+    // Thêm sự kiện reload khi người dùng sử dụng nút Back
+    useEffect(() => {
+        const handlePopState = () => {
+            window.location.reload(); // Reload trang khi nhấn Back
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState); // Clean up sự kiện khi component bị hủy
+        };
+    }, []);
+
     return (
         <div className="list add flex-col">
             <p>All Foods List</p>
@@ -151,7 +164,7 @@ const List = ({ url }) => {
                                 checked={selectedFoods.includes(item._id)}
                                 onChange={() => toggleSelectFood(item._id)}
                             />
-                            <img src={`${url}/images/` + item.image} alt={item.image} />
+                            <img src={`${url}/images/` + item.image} alt={item.name} />
                             <p><strong>{item.name}</strong></p>
                             <p>{item.category}</p>
                             <p>{formatPrice(item.price)}</p>
